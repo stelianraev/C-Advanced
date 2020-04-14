@@ -486,5 +486,130 @@ namespace MultidimensionalArrays
                 Console.WriteLine($"{totalCoals - coalsCoolected} coals left. ({startPositionRow}, {startPositionCol})");
             }
         }
+        
+         // 08. *Bombs
+        public static void Bombs()
+        {
+            long size = long.Parse(Console.ReadLine());
+
+            long[,] matrix = new long[size, size];
+
+            //Filling matrix
+            for (long i = 0; i < size; i++)
+            {
+                var input = Console.ReadLine()
+                    .Split(" ", StringSplitOptions.RemoveEmptyEntries)
+                    .Select(long.Parse)
+                    .ToArray();
+                for (long j = 0; j < size; j++)
+                {
+                    matrix[i, j] = input[j];
+                }
+            }
+
+            Queue<long> bombCordinates = new Queue<long>(Console.ReadLine()
+                .Split(new[] { ' ', ',' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(long.Parse));
+
+            while (bombCordinates.Any())
+            {
+                long bombRow = bombCordinates.Dequeue();
+                long bombCol = bombCordinates.Dequeue();
+
+                if (matrix[bombRow, bombCol] > 0)
+                {
+                    if (bombRow - 1 >= 0)
+                    {
+                        if (matrix[bombRow - 1, bombCol] > 0)
+                        {
+                            matrix[bombRow - 1, bombCol] -= matrix[bombRow, bombCol];
+                        }
+                    }
+                    if (bombRow - 1 >= 0 && bombCol - 1 >= 0)
+                    {
+                        if (matrix[bombRow - 1, bombCol - 1] > 0)
+                        {
+                            matrix[bombRow - 1, bombCol - 1] -= matrix[bombRow, bombCol];
+                        }
+                    }
+                    if (bombRow - 1 >= 0 && bombCol + 1 >= 0 && bombCol + 1 <= size - 1)
+                    {
+                        if (matrix[bombRow - 1, bombCol + 1] > 0)
+                        {
+                            matrix[bombRow - 1, bombCol + 1] -= matrix[bombRow, bombCol];
+                        }
+                    }
+                    if (bombRow + 1 >= 0 && bombRow + 1 <= size - 1 && bombCol - 1 >= 0)
+                    {
+                        if (matrix[bombRow + 1, bombCol - 1] > 0)
+                        {
+                            matrix[bombRow + 1, bombCol - 1] -= matrix[bombRow, bombCol];
+                        }
+                    }
+                    if (bombRow + 1 >= 0 && bombRow + 1 <= size - 1 && bombCol + 1 >= 0 && bombCol + 1 <= size - 1)
+                    {
+                        if (matrix[bombRow + 1, bombCol + 1] > 0)
+                        {
+                            matrix[bombRow + 1, bombCol + 1] -= matrix[bombRow, bombCol];
+                        }
+                    }
+                    if (bombRow + 1 <= size - 1)
+                    {
+                        if (matrix[bombRow + 1, bombCol] > 0)
+                        {
+                            matrix[bombRow + 1, bombCol] -= matrix[bombRow, bombCol];
+                        }
+                    }
+                    if (bombCol - 1 >= 0)
+                    {
+                        if (matrix[bombRow, bombCol - 1] > 0)
+                        {
+                            matrix[bombRow, bombCol - 1] -= matrix[bombRow, bombCol];
+                        }
+                    }
+                    if (bombCol + 1 <= size - 1)
+                    {
+                        if (matrix[bombRow, bombCol + 1] > 0)
+                        {
+                            matrix[bombRow, bombCol + 1] -= matrix[bombRow, bombCol];
+                        }
+                    }
+
+                    matrix[bombRow, bombCol] = 0;
+                }
+            }
+
+            //Cheching for aliving cells
+            long count = 0;
+            long sum = 0;
+            for (long row = 0; row < size; row++)
+            {
+                for (long col = 0; col < size; col++)
+                {
+                    if (matrix[row, col] > 0)
+                    {
+                        count++;
+                        sum += matrix[row, col];
+                    }
+                }
+            }
+
+            Console.WriteLine($"Alive cells: {count}");
+            Console.WriteLine($"Sum: {sum}");
+
+            //Printing the matrix
+            for (long row = 0; row < size; row++)
+            {
+                for (long col = 0; col < size; col++)
+                {
+                    Console.Write($"{matrix[row, col]}" + " ");
+                }
+
+                Console.WriteLine();
+            }
+        }       
+    }
+}
+
 
        
